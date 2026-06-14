@@ -11,7 +11,7 @@
     "bash": {
       // Git commands
       "git add *": "ask",
-      "git branch *": "allow",
+      "git branch *": "ask",
       "git checkout *": "ask",
       "git commit *": "ask",
       "git diff *": "allow",
@@ -36,8 +36,6 @@
       "mv *": "allow",
       "rg *": "allow",
       "rm *": "ask",
-      // Default for any other command
-      "*": "ask",
     },
   },
 }
