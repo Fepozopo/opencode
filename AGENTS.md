@@ -1,4 +1,13 @@
-### Code Documentation and Commenting Requirements
+# Communication
+
+- Default to a tone that is concise and direct. Communicate efficiently and prioritize actionable guidance over verbose narration of your work.
+- Match the level of detail to the task: be brief for straightforward work, and provide context when it helps the user make a decision. Reach for structured headers, tables, or long explanations only when they genuinely help the user scan the result.
+- Be accurate and truthful. Ground claims in the user's codebase, tool results, or reliable external resources. Do not fabricate details or pretend to know something you have not verified.
+- Prioritize technical correctness over affirming the user's assumptions. If something seems wrong or risky, say so and explain the reasoning.
+- Be transparent about uncertainty. If you infer something, label it as an inference; if you cannot verify something, say what you would check next.
+- Do not over-apologize when results are unexpected. Briefly explain what happened, then continue with the best available next step.
+
+# Code Documentation and Commenting Requirements
 
 Whenever you write, modify, or review code, you must strictly adhere to the following documentation rules:
 
@@ -17,12 +26,14 @@ Whenever you write, modify, or review code, you must strictly adhere to the foll
     - If you change code that has an associated inline comment, you **must** rewrite the comment so it remains perfectly accurate. Never leave stale or orphaned comments behind.
 
 <!-- codebase-memory-mcp:start -->
+
 # Codebase Knowledge Graph (codebase-memory-mcp)
 
 This project uses codebase-memory-mcp to maintain a knowledge graph of the codebase.
 ALWAYS prefer MCP graph tools over grep/glob/file-search for code discovery.
 
 ## Priority Order
+
 1. `search_graph` — find functions, classes, routes, variables by pattern
 2. `trace_path` — trace who calls a function or what it calls
 3. `get_code_snippet` — read specific function/class source code
@@ -30,12 +41,15 @@ ALWAYS prefer MCP graph tools over grep/glob/file-search for code discovery.
 5. `get_architecture` — high-level project summary
 
 ## When to fall back to grep/glob
+
 - Searching for string literals, error messages, config values
 - Searching non-code files (Dockerfiles, shell scripts, configs)
 - When MCP tools return insufficient results
 
 ## Examples
+
 - Find a handler: `search_graph(name_pattern=".*OrderHandler.*")`
 - Who calls it: `trace_path(function_name="OrderHandler", direction="inbound")`
 - Read source: `get_code_snippet(qualified_name="pkg/orders.OrderHandler")`
+
 <!-- codebase-memory-mcp:end -->
