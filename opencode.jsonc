@@ -8,6 +8,7 @@
     "auto": true,
     "prune": true,
   },
+  "formatter": true,
   "permission": {
     "bash": {
       // Git commands
