@@ -26,6 +26,12 @@ Whenever you write, modify, or review code, you must strictly adhere to the foll
     - If you modify an existing function, struct, or logic block, you **must** update the corresponding structural documentation (GoDoc, docstring, etc.) to reflect the changes.
     - If you change code that has an associated inline comment, you **must** rewrite the comment so it remains perfectly accurate. Never leave stale or orphaned comments behind.
 
+# Refactoring and Breaking Changes
+
+- **Prioritize Architecture Over Compatibility:** Do not write suboptimal code merely to preserve existing function signatures, data structures, or APIs. Unless explicitly instructed to maintain backward compatibility, you are encouraged to make breaking changes if they result in cleaner, more idiomatic, and more maintainable code.
+- **Avoid Workarounds:** If a new feature or fix demands a change to an underlying type or interface, make the necessary structural changes rather than bolting on messy workarounds.
+- **Update Callers:** When you introduce a breaking change (like modifying a function signature), assume responsibility for fixing the affected call sites in the provided context.
+
 <!-- codebase-memory-mcp:start -->
 
 # Codebase Knowledge Graph (codebase-memory-mcp)
