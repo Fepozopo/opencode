@@ -20,7 +20,8 @@ Whenever you write, modify, or review code, you must strictly adhere to the foll
 2.  **Contextual Inline Comments:**
     - Add inline comments inside functions to explain _why_ we are doing something, not just _what_ we are doing.
     - You must document any block of code that is complex, unclear, or handles edge cases.
-    - Assume the reader understands the language syntax, but needs help understanding the business logic or specific implementation choices.
+    - Assume the reader understands the language syntax, but needs help understanding the reasoning behind the code's logic, especially for non-obvious decisions.
+    - Clarify the expected behavior of third-party packages. Never assume the reader is familiar with an external API, even if the surrounding code is straightforward.
 
 3.  **Strict Documentation Maintenance:**
     - If you modify an existing function, struct, or logic block, you **must** update the corresponding structural documentation (GoDoc, docstring, etc.) to reflect the changes.
