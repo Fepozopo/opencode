@@ -1,37 +1,41 @@
 # Communication
 
-- Default to a tone that is concise and direct. Communicate efficiently and prioritize actionable guidance over verbose narration of your work.
-- Match the level of detail to the task: be brief for straightforward work, and provide context when it helps the user make a decision. Reach for structured headers, tables, or long explanations only when they genuinely help the user scan the result.
-- Be accurate and truthful. Ground claims in the user's codebase, tool results, or reliable external resources. Do not fabricate details or pretend to know something you have not verified.
-- Prioritize technical correctness over affirming the user's assumptions. If something seems wrong or risky, say so and explain the reasoning.
-- Be transparent about uncertainty. If you infer something, label it as an inference; if you cannot verify something, say what you would check next.
-- Do not over-apologize when results are unexpected. Briefly explain what happened, then continue with the best available next step.
-- Never guess or make assumptions about missing requirements, technical details, or user intent. If any part of a request is vague, ambiguous, or lacks context, you must stop and ask specific clarifying questions before writing any code or providing a solution. Only move forward once you have all the necessary context.
+- **Be concise and direct.** Prioritize actionable guidance over verbose narration. Use structured formatting (headers, tables) only when it genuinely improves scannability.
+- **Be accurate and truthful.** Ground claims in the provided codebase, tool results, or reliable external resources. Do not fabricate details.
+- **Prioritize technical correctness.** If a user assumption is flawed or a requested approach is risky, explicitly state the problem and explain your reasoning.
+- **Never guess or assume.** If requirements, technical details, or user intent are ambiguous or missing, you must stop and ask specific clarifying questions. Only proceed once you have the necessary context. 
+- **Be transparent about limitations.** Label inferences clearly. If you cannot verify something, state what you would check next.
+- **Do not over-apologize.** If results are unexpected or an error occurs, briefly state what happened and immediately provide the next best step.
 
 # Code Documentation and Commenting Requirements
 
 Whenever you write, modify, or review code, you must strictly adhere to the following documentation rules:
 
-1.  **Mandatory Structural Documentation:**
-    - You must include standard documentation for all functions, structs, classes, interfaces, and modules.
-    - Use the idiomatic format for the specific programming language (e.g., GoDoc format above functions/structs in Go, docstrings in Python, JSDoc in JavaScript).
-    - Explain what the item does, its parameters, and its return values.
-
-2.  **Contextual Inline Comments:**
-    - Add inline comments inside functions to explain _why_ we are doing something, not just _what_ we are doing.
-    - You must document any block of code that is complex, unclear, or handles edge cases.
-    - Assume the reader understands the language syntax, but needs help understanding the reasoning behind the code's logic, especially for non-obvious decisions.
-    - Document the purpose and behavior of third-party APIs. Never assume the reader is familiar with them, even if the surrounding code is straightforward.
-
-3.  **Strict Documentation Maintenance:**
-    - If you modify an existing function, struct, or logic block, you **must** update the corresponding structural documentation (GoDoc, docstring, etc.) to reflect the changes.
-    - If you change code that has an associated inline comment, you **must** rewrite the comment so it remains perfectly accurate. Never leave stale or orphaned comments behind.
+1. **Mandatory Structural Documentation:** Write standard, idiomatic documentation (e.g., GoDoc, docstrings, JSDoc) for all functions, structs, classes, interfaces, and modules. Explain the purpose, parameters, and return values.
+2. **Contextual Inline Comments:** Explain *why* a decision was made, not *what* the syntax does. Document complex logic and edge-case handling.
+3. **Third-Party APIs:** Always document the intended behavior and purpose of third-party API calls, assuming the reader has no prior context on the external library.
+4. **Strict Maintenance:** If you modify existing code, you must update its corresponding structural documentation and inline comments to guarantee perfect accuracy. Never leave stale or orphaned comments.
 
 # Refactoring and Breaking Changes
 
-- **Prioritize Architecture Over Compatibility:** Do not write suboptimal code merely to preserve existing function signatures, data structures, or APIs. Unless explicitly instructed to maintain backward compatibility, you are encouraged to make breaking changes if they result in cleaner, more idiomatic, and more maintainable code.
-- **Avoid Workarounds:** If a new feature or fix demands a change to an underlying type or interface, make the necessary structural changes rather than bolting on messy workarounds.
-- **Update Callers:** When you introduce a breaking change (like modifying a function signature), assume responsibility for fixing the affected call sites in the provided context.
+- **Prioritize Architecture Over Compatibility:** Unless explicitly instructed otherwise, introduce breaking changes if they result in cleaner, more idiomatic, and more maintainable code. Do not write suboptimal workarounds just to preserve existing signatures or data structures.
+- **Update Callers:** When introducing a breaking change, you are responsible for updating all affected call sites within the provided context. 
+- **Identify Out-of-Scope Impacts:** If your breaking change affects call sites or files that have not been provided in the prompt, explicitly list the files or components the user needs to provide or update.
+
+# Performance and Data-Oriented Design
+
+When writing or refactoring performance-critical code, prioritize memory access patterns and CPU cache efficiency over theoretical algorithmic complexity. 
+
+- **Design for the Cache Line:** CPUs fetch main memory in 64-byte chunks. A cache miss (fetching from RAM) costs hundreds of CPU cycles, whereas reading from the L1 cache costs only a few. Structure data so sequential operations read contiguous memory blocks.
+- **Prefer Contiguous Data:** Default to flat arrays of structs (value types) rather than arrays of objects/pointers (reference types). Arrays of pointers fragment memory, causing cache misses on iteration.
+- **Optimize Memory Alignment:** Declare variables inside structs/classes from largest to smallest (e.g., 8-byte integers first, 1-byte booleans last). This minimizes memory padding waste and fits more items into a single cache line.
+- **Process in Bulk:** Avoid object-oriented "tick" or "update" methods that operate on a single instance at a time. Write functions that take arrays or slices of data and process them in bulk.
+- **Avoid Last-Minute Decisions:** Eliminate branches (`if/else`) inside hot loops. Instead of iterating through a mixed collection and branching based on state, split the data into separate arrays by state and process each array uniformly.
+- **Take Information Out of Band:** When splitting data into state-specific arrays, use the array membership itself to imply state. (e.g., If an entity is in the `dead_enemies` array, you do not need an `is_dead` boolean on the struct).
+- **Use Minimal Data Types:** Pack data tightly. Use 8-bit integers or byte-backed enums instead of 32-bit integers or multiple loose booleans. Avoid strings for IDs or frequently compared variables; always use integer IDs or enums.
+- **Relax Unnecessary Constraints:** Do not pay for guarantees you don't need. If the order of an array doesn't matter, avoid O(N) array deletions that shift elements. Instead, use an O(1) "swap and pop" (move the last element into the deleted spot and shrink the array size).
+- **Pre-Compute and Hoist:** Lift unchanging variables (invariants) out of loops. If an operation can be pre-computed, baked at initialization, or done ahead of time, do not execute it at runtime.
+- **Avoid Unmanaged Callbacks in Hot Paths:** Function pointers, delegates, and observer patterns obscure the performance cost of a loop. Keep logic inline for performance-critical batch processing.
 
 <!-- codebase-memory-mcp:start -->
 
