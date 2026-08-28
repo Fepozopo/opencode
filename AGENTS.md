@@ -37,6 +37,15 @@ When writing or refactoring performance-critical code, prioritize memory access 
 - **Pre-Compute and Hoist:** Lift unchanging variables (invariants) out of loops. If an operation can be pre-computed, baked at initialization, or done ahead of time, do not execute it at runtime.
 - **Avoid Unmanaged Callbacks in Hot Paths:** Function pointers, delegates, and observer patterns obscure the performance cost of a loop. Keep logic inline for performance-critical batch processing.
 
+# "Clean Code" Performance Traps
+
+Do not prioritize theoretical maintainability over raw hardware efficiency. Applying dogma from clean code evangelists blindly erases decades of hardware evolution. In performance-critical paths, you must abandon these rules.
+
+- **Reject Forced Polymorphism:** Virtual functions and class hierarchies introduce pointless pointer indirection and hide your logic from the compiler. Rip them out. Use standard switch statements, enums, and unions instead. A basic switch over a union type easily beats virtual dispatch by feeding the compiler exactly what it needs to optimize.
+- **Violate Data Hiding:** Treating internals as black boxes guarantees horrible performance. Functions absolutely must exploit the internal structure of the data they process. Organize your architecture by function, not by isolating everything into fractured class files.
+- **Drive Logic with Tables:** When you organize by function, patterns across your data become obvious. Exploit this by replacing switch statements with flat lookup tables. Fusing the data model with the code instantly drops cycle counts and yields massive, 10x-15x speed multipliers.
+- **Don't Worship D.R.Y.:** "Don't Repeat Yourself" is fine for standard boilerplate, but it becomes a liability if it gets in the way of hardware utilization. If building redundant, specialized tables unlocks SIMD/AVX instructions or tighter cache packing, duplicate the data. Never trade execution speed for a smaller source file.
+
 <!-- codebase-memory-mcp:start -->
 
 # Codebase Knowledge Graph (codebase-memory-mcp)
