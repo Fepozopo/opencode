@@ -46,6 +46,40 @@ Do not prioritize theoretical maintainability over raw hardware efficiency. Appl
 - **Drive Logic with Tables:** When you organize by function, patterns across your data become obvious. Exploit this by replacing switch statements with flat lookup tables. Fusing the data model with the code instantly drops cycle counts and yields massive, 10x-15x speed multipliers.
 - **Don't Worship D.R.Y.:** "Don't Repeat Yourself" is fine for standard boilerplate, but it becomes a liability if it gets in the way of hardware utilization. If building redundant, specialized tables unlocks SIMD/AVX instructions or tighter cache packing, duplicate the data. Never trade execution speed for a smaller source file.
 
+# Testing
+
+## Test design
+
+- **Test observable behavior first:** Assert against returned values, specific errors, persisted state, network requests, emitted files, events, and user-visible output.
+- **Avoid testing private state:** Do not test internal helpers or unexported structures unless they enforce a strict boundary (security, protocol, migration) that cannot be exercised through a public interface.
+- **Derive expectations independently:** Do NOT construct expected values by calling the same production helper or reading the same mutable production constant under test. Calculate the expected outcome independently to avoid tautological tests.
+- **Use data-driven tables:** Prefer named, table-driven test matrices for testing varying inputs, edge cases, and behavioral variants. Keep test-case ordering deterministic.
+- **Enforce one behavior per case:** Keep each test or sub-test focused on one specific behavior or policy. Split tests that combine unrelated concerns.
+- **Assert specific failures:** Avoid tautological assertions like checking merely that an error occurred. Verify specific error types, error codes, wrapped causes, statuses, or observable failure outcomes.
+- **Test the boundaries:** Always include cases for zero-values, nil pointers, empty collections, and common off-by-one boundary conditions.
+- **Isolate dependencies:** When interacting with external systems (network, disk, database), use dependency injection via interfaces. Provide minimal, purposefully built fakes or stubs in the test rather than relying on live systems. 
+- **Keep fixtures minimal:** Include only the state required to exercise the behavior being asserted.
+- **Do not duplicate production logic:** Test helpers should construct inputs, manage resources, or improve diagnostics—never recreate the implementation being tested.
+
+## Determinism and isolation
+
+- **No arbitrary delays:** Never use arbitrary thread sleeps or hardcoded timeouts to synchronize tests. Use deterministic polling, promises, callbacks, or await mechanisms provided by the language or framework.
+- **Inject environment state:** Inject clocks, locations, randomness, filesystem paths, and network boundaries when the production API permits it.
+- **Fix time and location:** Use fixed timestamps and explicit timezones/locations. Do not rely on local system time, the current date, or machine-specific environment state unless validating that exact localization behavior.
+- **Use native teardown hooks:** Use the test framework's built-in temporary directory utilities and lifecycle hooks (e.g., `beforeEach`/`afterEach`, `t.Cleanup()`, or `tearDown`) to manage and clean up resources such as servers, files, and database handles.
+- **Isolate process variables:** Use the test framework's environment mocking utilities to temporarily override variables rather than mutating global process state directly.
+- **Safe parallel execution:** Enable parallel test execution only when the test has no shared mutable state, no global configuration mutation, and no dependence on process-wide time or environment settings.
+- **Mock network boundaries:** Network-dependent tests must use local in-memory interceptors, mock servers, or HTTP fakes. Never make real network calls to external endpoints in a test.
+
+## Assertions and fixtures
+
+- **Rich failure diagnostics:** Failure messages must provide clear context. Always include the input parameters, the actual result, and the expected result (e.g., `expected X for input Y, but got Z`).
+- **Type-safe error assertions:** When validating failures, assert against specific error types, classes, or codes whenever the language permits. Do not assert against exact error string wording unless the text itself is a strict, user-visible contract.
+- **Assert the complete contract:** Verify all externally observable outcomes. For example, a delete test should verify all deleted resources cascade properly, not just check for a single missing ID.
+- **Keep fixtures minimal:** Include only the minimal required state and data needed to exercise the specific behavior being asserted.
+- **Clean test helpers:** Extract repeated setup into small, concisely documented test helper functions. Ensure these helpers use the framework's native teardown hooks and register themselves as test helpers to preserve clean stack traces.
+- **No duplicated logic:** Do not add test helpers that reproduce production logic. Helpers should exclusively build inputs, manage resources, or improve diagnostics.
+
 <!-- codebase-memory-mcp:start -->
 
 # Codebase Knowledge Graph (codebase-memory-mcp)
