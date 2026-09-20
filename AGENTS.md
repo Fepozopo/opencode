@@ -7,7 +7,20 @@
 - **Be transparent about limitations.** Label inferences clearly. If you cannot verify something, state what you would check next.
 - **Do not over-apologize.** If results are unexpected or an error occurs, briefly state what happened and immediately provide the next best step.
 
-# Code Documentation and Commenting Requirements
+# Writing code
+
+Prefer the smallest clear, correct change that fully solves the task.
+
+Before editing, understand the affected flow and check whether existing
+code, the standard library, native platform features, or installed
+dependencies already solve it.
+
+- Build only what the task requires. Avoid speculative abstractions, flexibility, boilerplate, and unnecessary dependencies.
+- Avoid magic values. Name any literal whose meaning is not obvious at the call site.
+- Never sacrifice correctness or readability to reduce line count or diff size.
+- Suggest a simpler approach when it meets the same requirements.
+
+## Code Documentation and Commenting Requirements
 
 Whenever you write, modify, or review code, you must strictly adhere to the following documentation rules:
 
@@ -16,13 +29,13 @@ Whenever you write, modify, or review code, you must strictly adhere to the foll
 3. **Third-Party APIs:** Always document the intended behavior and purpose of third-party API calls, assuming the reader has no prior context on the external library.
 4. **Strict Maintenance:** If you modify existing code, you must update its corresponding structural documentation and inline comments to guarantee perfect accuracy. Never leave stale or orphaned comments.
 
-# Refactoring and Breaking Changes
+## Refactoring and Breaking Changes
 
 - **Prioritize Architecture Over Compatibility:** Unless explicitly instructed otherwise, introduce breaking changes if they result in cleaner, more idiomatic, and more maintainable code. Do not write suboptimal workarounds just to preserve existing signatures or data structures.
 - **Update Callers:** When introducing a breaking change, you are responsible for updating all affected call sites within the provided context. 
 - **Identify Out-of-Scope Impacts:** If your breaking change affects call sites or files that have not been provided in the prompt, explicitly list the files or components the user needs to provide or update.
 
-# Performance and Data-Oriented Design
+## Performance and Data-Oriented Design
 
 When writing or refactoring performance-critical code, prioritize memory access patterns and CPU cache efficiency over theoretical algorithmic complexity. 
 
@@ -37,7 +50,7 @@ When writing or refactoring performance-critical code, prioritize memory access 
 - **Pre-Compute and Hoist:** Lift unchanging variables (invariants) out of loops. If an operation can be pre-computed, baked at initialization, or done ahead of time, do not execute it at runtime.
 - **Avoid Unmanaged Callbacks in Hot Paths:** Function pointers, delegates, and observer patterns obscure the performance cost of a loop. Keep logic inline for performance-critical batch processing.
 
-# "Clean Code" Performance Traps
+## "Clean Code" Performance Traps
 
 Do not prioritize theoretical maintainability over raw hardware efficiency. Applying dogma from clean code evangelists blindly erases decades of hardware evolution. In performance-critical paths, you must abandon these rules.
 
@@ -46,7 +59,10 @@ Do not prioritize theoretical maintainability over raw hardware efficiency. Appl
 - **Drive Logic with Tables:** When you organize by function, patterns across your data become obvious. Exploit this by replacing switch statements with flat lookup tables. Fusing the data model with the code instantly drops cycle counts and yields massive, 10x-15x speed multipliers.
 - **Don't Worship D.R.Y.:** "Don't Repeat Yourself" is fine for standard boilerplate, but it becomes a liability if it gets in the way of hardware utilization. If building redundant, specialized tables unlocks SIMD/AVX instructions or tighter cache packing, duplicate the data. Never trade execution speed for a smaller source file.
 
-# Testing
+# Writing tests
+
+Do not write excessive tests, only add a test if its failure would tell you something is actually broken.
+Assertions on styling values, colors, or internal structure fail on harmless changes and pass on real bugs, so leave them out.
 
 ## Test design
 
