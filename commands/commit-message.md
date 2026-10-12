@@ -1,6 +1,6 @@
 ---
 description: Generate conventional commit message(s) from staged changes
-agent: plan
+agent: explore
 model: openai/gpt-6-luna
 ---
 
