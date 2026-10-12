@@ -1,5 +1,2 @@
 node_modules/
-bun.lock
-opencode.jsonc.tui-migration.bak
-package.json
-package-lock.json
+service.json

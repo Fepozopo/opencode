@@ -1,49 +1,52 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "autoupdate": true,
+  "update": "auto",
   "model": "openai/gpt-6.1-sol",
-  "small_model": "openai/gpt-6-luna",
+  "agents": {
+    "title": {
+      "model": "openai/gpt-6-luna",
+    },
+  },
   "default_agent": "build",
   "compaction": {
     "auto": true,
-    "prune": true,
   },
-  "permission": {
-    "bash": {
-      // Git commands
-      "git add *": "ask",
-      "git branch *": "ask",
-      "git checkout *": "ask",
-      "git commit *": "ask",
-      "git diff *": "allow",
-      "git log *": "allow",
-      "git merge *": "ask",
-      "git pull *": "ask",
-      "git push *": "ask",
-      "git rebase *": "ask",
-      "git reset *": "ask",
-      "git status *": "allow",
-      // Go commands
-      "go build *": "allow",
-      "go fmt *": "allow",
-      "go test *": "allow",
-      "go vet *": "allow",
-      "gofmt *": "allow",
-      "golangci-lint *": "allow",
-      // File searching and manipulation
-      "cp *": "allow",
-      "find *": "allow",
-      "grep *": "allow",
-      "mv *": "allow",
-      "rg *": "allow",
-      "rm *": "ask",
-    },
-  },
+  "permissions": [
+    // Git commands
+    { "action": "shell", "resource": "git add *", "effect": "ask" },
+    { "action": "shell", "resource": "git branch *", "effect": "ask" },
+    { "action": "shell", "resource": "git checkout *", "effect": "ask" },
+    { "action": "shell", "resource": "git commit *", "effect": "ask" },
+    { "action": "shell", "resource": "git diff *", "effect": "allow" },
+    { "action": "shell", "resource": "git log *", "effect": "allow" },
+    { "action": "shell", "resource": "git merge *", "effect": "ask" },
+    { "action": "shell", "resource": "git pull *", "effect": "ask" },
+    { "action": "shell", "resource": "git push *", "effect": "ask" },
+    { "action": "shell", "resource": "git rebase *", "effect": "ask" },
+    { "action": "shell", "resource": "git reset *", "effect": "ask" },
+    { "action": "shell", "resource": "git status *", "effect": "allow" },
+    // Go commands
+    { "action": "shell", "resource": "go build *", "effect": "allow" },
+    { "action": "shell", "resource": "go fmt *", "effect": "allow" },
+    { "action": "shell", "resource": "go test *", "effect": "allow" },
+    { "action": "shell", "resource": "go vet *", "effect": "allow" },
+    { "action": "shell", "resource": "gofmt *", "effect": "allow" },
+    { "action": "shell", "resource": "golangci-lint *", "effect": "allow" },
+    // File searching and manipulation
+    { "action": "shell", "resource": "cp *", "effect": "allow" },
+    { "action": "shell", "resource": "find *", "effect": "allow" },
+    { "action": "shell", "resource": "grep *", "effect": "allow" },
+    { "action": "shell", "resource": "mv *", "effect": "allow" },
+    { "action": "shell", "resource": "rg *", "effect": "allow" },
+    { "action": "shell", "resource": "rm *", "effect": "ask" },
+  ],
   "mcp": {
-    "codebase-memory-mcp": {
-      "enabled": true,
-      "type": "local",
-      "command": ["/Users/fepozopo/.local/bin/codebase-memory-mcp"],
+    "servers": {
+      "codebase-memory-mcp": {
+        "disabled": false,
+        "type": "local",
+        "command": ["/Users/fepozopo/.local/bin/codebase-memory-mcp"],
+      },
     },
   },
 }
