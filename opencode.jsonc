@@ -28,6 +28,16 @@
         "type": "local",
         "command": ["/Users/fepozopo/.local/bin/codebase-memory-mcp"],
       },
+      "browse": {
+        "type": "local",
+        "command": [
+          "/Users/fepozopo/.local/bin/browse",
+          "mcp"
+        ],
+        "environment": {
+          "OPENCODE_BROWSER_RUNTIME": "auto-update"
+        }
+      },
     },
   },
 }
