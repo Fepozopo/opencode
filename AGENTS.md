@@ -3,7 +3,7 @@
 - **Be concise and direct.** Prioritize actionable guidance over verbose narration. Use structured formatting (headers, tables) only when it genuinely improves scannability.
 - **Be accurate and truthful.** Ground claims in the provided codebase, tool results, or reliable external resources. Do not fabricate details.
 - **Prioritize technical correctness.** If a user assumption is flawed or a requested approach is risky, explicitly state the problem and explain your reasoning.
-- **Never guess or assume.** If requirements, technical details, or user intent are ambiguous or missing, you must stop and ask specific clarifying questions. Only proceed once you have the necessary context. 
+- **Never guess or assume.** If requirements, technical details, or user intent are ambiguous or missing, you must stop and ask specific clarifying questions. Only proceed once you have the necessary context.
 - **Be transparent about limitations.** Label inferences clearly. If you cannot verify something, state what you would check next.
 - **Do not over-apologize.** If results are unexpected or an error occurs, briefly state what happened and immediately provide the next best step.
 
@@ -15,29 +15,33 @@ Before editing, understand the affected flow and check whether existing
 code, the standard library, native platform features, or installed
 dependencies already solve it.
 
-- Build only what the task requires. Avoid speculative abstractions, flexibility, boilerplate, and unnecessary dependencies.
-- Avoid magic values. Name any literal whose meaning is not obvious at the call site.
-- Never sacrifice correctness or readability to reduce line count or diff size.
-- Suggest a simpler approach when it meets the same requirements.
+- **Build only what the task requires:** Avoid speculative abstractions, flexibility, boilerplate, and unnecessary dependencies.
+- **Prefer simplicity over defensive abstractions:** Choose clear, direct solutions instead of layering speculative guards, wrappers, and fallback paths.
+- **Trust existing safeguards:** Verify what the type system, compiler, runtime, database constraints, or upstream boundaries already enforce before adding new checks.
+- **Do not architect around one-off incidents:** Resolve isolated anomalies at their root cause rather than converting rare edge cases into permanent architectural requirements.
+- **Eliminate redundant validations and dead code:** Actively detect and remove duplicate checks, unreachable branches, and unnecessary defensive logic when writing or refactoring.
+- **Avoid magic values:** Name any literal whose meaning is not obvious at the call site.
+- **Preserve correctness and readability:** Never sacrifice clarity or correctness just to reduce line count or diff size.
+- **Suggest a simpler approach** whenever it meets the same requirements.
 
 ## Code Documentation and Commenting Requirements
 
 Whenever you write, modify, or review code, you must strictly adhere to the following documentation rules:
 
 1. **Mandatory Structural Documentation:** Write standard, idiomatic documentation (e.g., GoDoc, docstrings, JSDoc) for all functions, structs, classes, interfaces, and modules. Explain the purpose, parameters, and return values.
-2. **Contextual Inline Comments:** Explain *why* a decision was made, not *what* the syntax does. Document complex logic and edge-case handling.
+2. **Contextual Inline Comments:** Explain _why_ a decision was made, not _what_ the syntax does. Document complex logic and edge-case handling.
 3. **Third-Party APIs:** Always document the intended behavior and purpose of third-party API calls, assuming the reader has no prior context on the external library.
 4. **Strict Maintenance:** If you modify existing code, you must update its corresponding structural documentation and inline comments to guarantee perfect accuracy. Never leave stale or orphaned comments.
 
 ## Refactoring and Breaking Changes
 
 - **Prioritize Architecture Over Compatibility:** Unless explicitly instructed otherwise, introduce breaking changes if they result in cleaner, more idiomatic, and more maintainable code. Do not write suboptimal workarounds just to preserve existing signatures or data structures.
-- **Update Callers:** When introducing a breaking change, you are responsible for updating all affected call sites within the provided context. 
+- **Update Callers:** When introducing a breaking change, you are responsible for updating all affected call sites within the provided context.
 - **Identify Out-of-Scope Impacts:** If your breaking change affects call sites or files that have not been provided in the prompt, explicitly list the files or components the user needs to provide or update.
 
 ## Performance and Data-Oriented Design
 
-When writing or refactoring performance-critical code, prioritize memory access patterns and CPU cache efficiency over theoretical algorithmic complexity. 
+When writing or refactoring performance-critical code, prioritize memory access patterns and CPU cache efficiency over theoretical algorithmic complexity.
 
 - **Design for the Cache Line:** CPUs fetch main memory in 64-byte chunks. A cache miss (fetching from RAM) costs hundreds of CPU cycles, whereas reading from the L1 cache costs only a few. Structure data so sequential operations read contiguous memory blocks.
 - **Prefer Contiguous Data:** Default to flat arrays of structs (value types) rather than arrays of objects/pointers (reference types). Arrays of pointers fragment memory, causing cache misses on iteration.
@@ -73,7 +77,7 @@ Assertions on styling values, colors, or internal structure fail on harmless cha
 - **Enforce one behavior per case:** Keep each test or sub-test focused on one specific behavior or policy. Split tests that combine unrelated concerns.
 - **Assert specific failures:** Avoid tautological assertions like checking merely that an error occurred. Verify specific error types, error codes, wrapped causes, statuses, or observable failure outcomes.
 - **Test the boundaries:** Always include cases for zero-values, nil pointers, empty collections, and common off-by-one boundary conditions.
-- **Isolate dependencies:** When interacting with external systems (network, disk, database), use dependency injection via interfaces. Provide minimal, purposefully built fakes or stubs in the test rather than relying on live systems. 
+- **Isolate dependencies:** When interacting with external systems (network, disk, database), use dependency injection via interfaces. Provide minimal, purposefully built fakes or stubs in the test rather than relying on live systems.
 - **Keep fixtures minimal:** Include only the state required to exercise the behavior being asserted.
 - **Do not duplicate production logic:** Test helpers should construct inputs, manage resources, or improve diagnostics—never recreate the implementation being tested.
 
@@ -97,6 +101,7 @@ Assertions on styling values, colors, or internal structure fail on harmless cha
 - **No duplicated logic:** Do not add test helpers that reproduce production logic. Helpers should exclusively build inputs, manage resources, or improve diagnostics.
 
 <!-- codebase-memory-mcp:start -->
+
 # Codebase Memory
 
 ## Codebase Knowledge Graph (codebase-memory-mcp)
@@ -105,6 +110,7 @@ This project uses codebase-memory-mcp to maintain a knowledge graph of the codeb
 ALWAYS prefer MCP graph tools over grep/glob/file-search for code discovery.
 
 ### Priority Order
+
 1. `search_graph` — find functions, classes, routes, variables by pattern
 2. `trace_path` — trace who calls a function or what it calls
 3. `get_code_snippet` — read specific function/class source code
@@ -113,22 +119,26 @@ ALWAYS prefer MCP graph tools over grep/glob/file-search for code discovery.
 6. `get_architecture` — high-level project summary
 
 ### Evidence tiers
+
 - **Scout (Tier 1):** quick positive lookup with few calls and targeted source checks. Mark it provisional; do not make negative or exhaustive claims.
 - **Verify (Tier 2, default):** task-directed graph evidence, relevant trace directions, exact snippets for material claims, and relevant pagination.
 - **Auditor (Tier 3):** bounded-scope full verification with current generation, complete relevant pagination, both call directions and broader relationships when material, and every limitation disclosed.
 - After candidate paths are known in any tier, call `check_index_coverage` once with every evidence path. Add relevant scopes for negative or exhaustive claims. A clean result means no recorded gap, not proof of completeness. For partial, skipped, excluded, stale, pending, or unknown coverage, read/grep the reported ranges or scope before relying on graph results.
 
 ### When to fall back to grep/glob
+
 - Searching for string literals, error messages, config values
 - Searching non-code files (Dockerfiles, shell scripts, configs)
 - When MCP tools return insufficient results
 
 ### Examples
+
 - Find a handler: `search_graph(name_pattern=".*OrderHandler.*")`
 - Who calls it: `trace_path(function_name="OrderHandler", direction="inbound")`
 - Read source: `get_code_snippet(qualified_name="pkg/orders.OrderHandler")`
 
 ### Session resets and subagents
+
 - At session start or after compaction, confirm the nearest graph project and generation with `list_projects` or `index_status`, then choose Scout, Verify, or Auditor.
 - The graph project is the `list_projects` entry whose `root_path` contains your working directory; pass its `name` (or the absolute directory itself) as `project`, never a repo or folder name.
 - Before spawning a subagent, query the graph and coverage in the parent. Pass the tier, project, generation/freshness, bounded scope, queries and pagination state, qualified symbols, paths, call-chain findings, coverage evidence with ranges/reasons, source fallback already performed, and unresolved questions in the delegated task context.
