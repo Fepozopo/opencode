@@ -35,7 +35,7 @@ Whenever you write, modify, or review code, you must strictly adhere to the foll
 
 ## Refactoring and Breaking Changes
 
-- **Prioritize Architecture Over Compatibility:** Unless explicitly instructed otherwise, introduce breaking changes if they result in cleaner, more idiomatic, and more maintainable code. Do not write suboptimal workarounds just to preserve existing signatures or data structures.
+- **Prioritize Architecture Over Compatibility:** Unless explicitly instructed otherwise, you should introduce breaking changes if they result in cleaner, more idiomatic, and more maintainable code. Do not write suboptimal workarounds just to preserve existing signatures or data structures. Do not write wrapper functions, adapter layers, re-exports, deprecated aliases, optional-parameter overloads, or fallback branches to keep old callers. Modify interfaces directly in place.
 - **Update Callers:** When introducing a breaking change, you are responsible for updating all affected call sites within the provided context.
 - **Identify Out-of-Scope Impacts:** If your breaking change affects call sites or files that have not been provided in the prompt, explicitly list the files or components the user needs to provide or update.
 
@@ -80,6 +80,7 @@ Assertions on styling values, colors, or internal structure fail on harmless cha
 - **Isolate dependencies:** When interacting with external systems (network, disk, database), use dependency injection via interfaces. Provide minimal, purposefully built fakes or stubs in the test rather than relying on live systems.
 - **Keep fixtures minimal:** Include only the state required to exercise the behavior being asserted.
 - **Do not duplicate production logic:** Test helpers should construct inputs, manage resources, or improve diagnostics—never recreate the implementation being tested.
+- **Update or delete superseded tests:** When changing signatures or behavior, rewrite or delete existing tests that assert the old behavior. Never preserve legacy behavior or add wrappers to keep outdated tests passing.
 
 ## Determinism and isolation
 
