@@ -4,19 +4,40 @@
     "name": "catppuccin",
     "mode": "system"
   },
+  "animations": true,
   "scroll": {
     "speed": 3,
     "acceleration": false
   },
-  "diffs": {
-    "view": "unified"
+  "cursor": {
+    "style": "block",
+    "blinking": true
   },
   "session": {
     "scrollbar": false,
-    "thinking": "show"
+    "thinking": "show",
+    "verbosity": "high"
   },
-  "animations": false,
   "tabs": {
-    "mode": "on"
+    "mode": "on",
+    "scope": "cwd",
+    "layout": "horizontal",
+    "indicators": "status"
+  },
+  "diffs": {
+    "view": "unified"
+  },
+  "highlights": true,
+  "mini": {
+    "thinking": "show",
+    "tools": "show",
+    "shell_output": "show",
+    "turn_summary": "show",
+    "footer": "show",
+    "splash": "show",
+    "work_spinner": "block-soft-slide",
+    "mono": false,
+    "replay": true,
+    "replay_limit": 200
   }
 }
