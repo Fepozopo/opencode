@@ -27,6 +27,7 @@
         "disabled": false,
         "type": "local",
         "command": ["/Users/fepozopo/.local/bin/codebase-memory-mcp"],
+        "codemode": false,
       },
       "browse": {
         "type": "local",
@@ -34,6 +35,7 @@
         "environment": {
           "OPENCODE_BROWSER_RUNTIME": "auto-update",
         },
+        "codemode": true,
       },
     },
   },
