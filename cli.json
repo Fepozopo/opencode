@@ -5,6 +5,7 @@
     "mode": "system"
   },
   "animations": true,
+  "highlights": true,
   "scroll": {
     "speed": 3,
     "acceleration": false
@@ -27,7 +28,11 @@
   "diffs": {
     "view": "unified"
   },
-  "highlights": true,
+  "prompt": {
+    "editor": true,
+    "paste": "full",
+    "image_preview": false
+  },
   "mini": {
     "thinking": "show",
     "tools": "show",
